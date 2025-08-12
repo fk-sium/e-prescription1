@@ -1,0 +1,322 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>E-Prescription — Dr. Md Rezaul Karim (Shrabon)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f6f7fb;--card:#ffffff;--muted:#6b7280;--accent:#0f172a}
+    *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+    body{margin:0;background:var(--bg);color:var(--accent);padding:18px}
+    .container{max-width:980px;margin:0 auto}
+    .card{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 8px 24px rgba(15,23,42,0.06)}
+    h1{margin:0;font-size:18px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=text], input[type=date], textarea, select{width:100%;padding:8px;border:1px solid #e6e9ef;border-radius:6px;font-size:14px}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .small{flex:0 0 140px}
+    .actions{display:flex;gap:8px;align-items:center}
+    button{padding:8px 12px;border:0;border-radius:8px;background:#111827;color:#fff;cursor:pointer}
+    .muted{color:var(--muted)}
+    .prescription{background:#fff;padding:18px;border:1px solid #e6e9ef;border-radius:8px}
+    .header{ text-align:center;margin-bottom:8px }
+    .header h2{margin:0;font-size:16px}
+    .header p{margin:2px 0;font-size:12px;color:var(--muted)}
+    table{width:100%;border-collapse:collapse;margin-top:6px}
+    th, td{border:1px solid #e6e9ef;padding:8px;text-align:left;font-size:13px}
+    th{background:#fafafa}
+    .med-line{display:flex;gap:8px;margin-bottom:8px}
+    .med-line input{flex:1}
+    .small-btn{padding:6px 8px;border-radius:6px;background:#374151;color:#fff;border:0}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .note{font-size:12px;color:var(--muted)}
+    @media(max-width:720px){.row{flex-direction:column}.small{flex:0 0 auto;width:100%}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <h1>E-Prescription — Dr. Md Rezaul Karim (Shrabon)</h1>
+        <div class="note">Quick prototype: fill the form and click <strong>Save &amp; Generate PDF</strong>.</div>
+      </div>
+      <div class="actions">
+        <button id="saveDraft">Save Draft</button>
+        <button id="generatePdf">Save &amp; Generate PDF</button>
+      </div>
+    </div><div class="card">
+  <form id="prescForm">
+    <div class="row">
+      <div class="col">
+        <label>Patient Name</label>
+        <input id="patientName" type="text" placeholder="e.g. Rahim Uddin" required />
+      </div>
+      <div class="small">
+        <label>Age</label>
+        <input id="age" type="text" placeholder="e.g. 35" />
+      </div>
+      <div class="small">
+        <label>Gender</label>
+        <select id="gender"><option></option><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+    </div>
+
+    <div style="margin-top:12px" class="row">
+      <div class="col">
+        <label>Contact Number</label>
+        <input id="contact" type="text" placeholder="e.g. +8801XXXXXXXXX" />
+      </div>
+      <div class="col">
+        <label>Patient ID</label>
+        <input id="patientId" type="text" placeholder="auto or manual" />
+      </div>
+      <div class="small">
+        <label>Date of Visit</label>
+        <input id="visitDate" type="date" />
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label>Complaints / History</label>
+      <textarea id="complaints" rows="3" placeholder="Write symptoms, history, vitals..."></textarea>
+    </div>
+
+    <div style="margin-top:14px">
+      <label>Medications</label>
+      <div id="medList"></div>
+      <div style="margin-top:8px">
+        <button type="button" id="addMed" class="small-btn">+ Add Medicine</button>
+      </div>
+    </div>
+
+    <div style="margin-top:14px">
+      <label>Recommended Tests / Investigations</label>
+      <textarea id="tests" rows="2" placeholder="e.g. CBC, LFT, Chest X-ray"></textarea>
+    </div>
+
+    <div style="margin-top:14px" class="row">
+      <div class="col">
+        <label>Diagnosis / Notes</label>
+        <textarea id="diagnosis" rows="2"></textarea>
+      </div>
+      <div class="small">
+        <label>Follow-up Date</label>
+        <input id="followUp" type="date" />
+      </div>
+    </div>
+
+  </form>
+
+  <div style="margin-top:14px" class="muted">You can save the draft locally in your browser. For production use, add a secure backend and encrypted storage.</div>
+</div>
+
+<div style="margin-top:18px" class="card">
+  <div class="prescription" id="prescriptionPrint">
+    <div class="header">
+      <h2>Dr. Md Rezaul Karim (Shrabon)</h2>
+      <p>MBBS (Chittagong Medical College Hospital) | MRCS Part-A (London)</p>
+      <p>Ex-RMO - Labaid Cancer Hospital &amp; Super Speciality Centre. | RMO (CCU) - ZU Model Hospital Feni</p>
+      <p>BMDC reg no. A-119828</p>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;gap:12px">
+      <div>
+        <div><strong>Patient:</strong> <span id="p_patient"></span></div>
+        <div><strong>Age/Gender:</strong> <span id="p_age_gender"></span></div>
+        <div><strong>Contact:</strong> <span id="p_contact"></span></div>
+      </div>
+      <div style="text-align:right">
+        <div><strong>Date:</strong> <span id="p_date"></span></div>
+        <div><strong>Patient ID:</strong> <span id="p_pid"></span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      <strong>Complaints / History:</strong>
+      <div id="p_complaints" style="white-space:pre-wrap;margin-top:6px"></div>
+    </div>
+
+    <div style="margin-top:10px">
+      <strong>Medications:</strong>
+      <table id="p_meds">
+        <thead><tr><th>#</th><th>Name</th><th>Dosage / Frequency</th><th>Duration</th><th>Notes</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:10px">
+      <strong>Tests / Investigations:</strong>
+      <div id="p_tests" style="white-space:pre-wrap;margin-top:6px"></div>
+    </div>
+
+    <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:flex-end">
+      <div>
+        <strong>Diagnosis / Notes:</strong>
+        <div id="p_diagnosis" style="white-space:pre-wrap;margin-top:6px"></div>
+      </div>
+      <div style="text-align:center;min-width:180px">
+        <div><strong>Follow-up:</strong></div>
+        <div id="p_follow" style="margin-top:6px"></div>
+        <div style="margin-top:32px">--------------------------</div>
+        <div>Signature</div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;font-size:12px;color:var(--muted)">Note: This is a generated e-prescription. For production use, integrate secure authentication, encrypted storage and server-side PDF generation if desired.</div>
+  </div>
+</div>
+
+<div style="margin-top:12px;text-align:center;" class="muted">Prototype stores drafts in your browser only. For multi-user or secure storage, backend required.</div>
+
+  </div>  <!-- Libraries -->  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>  <script>
+    // Utilities
+    const qs = sel => document.querySelector(sel);
+    const qsa = sel => document.querySelectorAll(sel);
+
+    // Prefill date
+    const today = new Date().toISOString().slice(0,10);
+    qs('#visitDate').value = today;
+
+    // Medicine list handling
+    const medListEl = qs('#medList');
+    function createMedLine(data = {}){
+      const wrapper = document.createElement('div');
+      wrapper.className = 'med-line';
+      wrapper.innerHTML = `
+        <input class="" placeholder="Medicine name" value="${data.name||''}" />
+        <input placeholder="Dosage (e.g. 500 mg)" value="${data.dosage||''}" />
+        <input placeholder="Frequency (e.g. 1 bd)" value="${data.freq||''}" />
+        <input placeholder="Duration (e.g. 5 days)" value="${data.duration||''}" />
+        <input placeholder="Notes" value="${data.note||''}" />
+        <button class="small-btn remove">-</button>
+      `;
+      medListEl.appendChild(wrapper);
+      wrapper.querySelector('.remove').addEventListener('click',()=>{ wrapper.remove(); });
+    }
+    qs('#addMed').addEventListener('click',()=> createMedLine());
+    // Add one default line
+    createMedLine();
+
+    // Save draft locally
+    qs('#saveDraft').addEventListener('click',()=>{
+      const data = gatherForm();
+      localStorage.setItem('prescDraft', JSON.stringify(data));
+      alert('Draft saved locally in browser.');
+    });
+
+    // Load draft if present
+    function loadDraft(){
+      const raw = localStorage.getItem('prescDraft');
+      if(!raw) return;
+      try{
+        const d = JSON.parse(raw);
+        qs('#patientName').value = d.patientName||'';
+        qs('#age').value = d.age||'';
+        qs('#gender').value = d.gender||'';
+        qs('#contact').value = d.contact||'';
+        qs('#patientId').value = d.patientId||'';
+        qs('#visitDate').value = d.visitDate||today;
+        qs('#complaints').value = d.complaints||'';
+        qs('#tests').value = d.tests||'';
+        qs('#diagnosis').value = d.diagnosis||'';
+        qs('#followUp').value = d.followUp||'';
+        medListEl.innerHTML = '';
+        (d.meds||[]).forEach(m=>createMedLine(m));
+      }catch(e){console.warn('failed to load draft',e)}
+    }
+    loadDraft();
+
+    function gatherForm(){
+      const medEls = Array.from(medListEl.querySelectorAll('.med-line'));
+      const meds = medEls.map(el=>{
+        const inputs = el.querySelectorAll('input');
+        return {
+          name: inputs[0].value.trim(),
+          dosage: inputs[1].value.trim(),
+          freq: inputs[2].value.trim(),
+          duration: inputs[3].value.trim(),
+          note: inputs[4].value.trim()
+        }
+      }).filter(m=>m.name || m.dosage || m.freq || m.duration || m.note);
+
+      return {
+        patientName: qs('#patientName').value.trim(),
+        age: qs('#age').value.trim(),
+        gender: qs('#gender').value,
+        contact: qs('#contact').value.trim(),
+        patientId: qs('#patientId').value.trim(),
+        visitDate: qs('#visitDate').value,
+        complaints: qs('#complaints').value.trim(),
+        meds, tests: qs('#tests').value.trim(), diagnosis: qs('#diagnosis').value.trim(), followUp: qs('#followUp').value
+      }
+    }
+
+    function renderPreview(data){
+      qs('#p_patient').textContent = data.patientName || '-';
+      qs('#p_age_gender').textContent = [(data.age||'-'), (data.gender||'-')].join(' / ');
+      qs('#p_contact').textContent = data.contact || '-';
+      qs('#p_date').textContent = data.visitDate || '';
+      qs('#p_pid').textContent = data.patientId || '-';
+      qs('#p_complaints').textContent = data.complaints || '-';
+      const tbody = qs('#p_meds tbody'); tbody.innerHTML = '';
+      data.meds.forEach((m,i)=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${m.name||'-'}</td><td>${m.dosage} ${m.freq?('/ '+m.freq):''}</td><td>${m.duration||'-'}</td><td>${m.note||'-'}</td>`;
+        tbody.appendChild(tr);
+      });
+      qs('#p_tests').textContent = data.tests || '-';
+      qs('#p_diagnosis').textContent = data.diagnosis || '-';
+      qs('#p_follow').textContent = data.followUp || '-';
+    }
+
+    // PDF generation
+    qs('#generatePdf').addEventListener('click', async ()=>{
+      const data = gatherForm();
+      renderPreview(data);
+      // small validation
+      if(!data.patientName){ if(!confirm('Patient name is empty. Continue?')) return; }
+
+      // render and convert
+      const el = qs('#prescriptionPrint');
+      // remove outline/shadow for print
+      el.style.boxShadow = 'none';
+      try{
+        const canvas = await html2canvas(el, {scale:2, useCORS:true, scrollY:-window.scrollY});
+        const imgData = canvas.toDataURL('image/png');
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p','mm','a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        // calculate image dimensions to fit A4 with margins
+        const imgProps = {width: canvas.width, height: canvas.height};
+        const pxPerMm = canvas.width / (pageWidth* (96/25.4)); // not exact; we'll scale by ratio
+        const ratio = Math.min(pageWidth / (canvas.width * 25.4/96), pageHeight / (canvas.height * 25.4/96));
+        const imgWidthMm = canvas.width * ratio * 25.4/96;
+        const imgHeightMm = canvas.height * ratio * 25.4/96;
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidthMm-20, imgHeightMm-20);
+        const filename = `prescription_${(data.patientName||'patient').replace(/\s+/g,'_')}_${data.visitDate||today}.pdf`;
+        pdf.save(filename);
+      }catch(err){
+        console.error(err); alert('Failed to generate PDF — see console for details.');
+      }finally{
+        el.style.boxShadow = '';
+      }
+    });
+
+    // live preview when inputs change
+    ['patientName','age','gender','contact','patientId','visitDate','complaints','tests','diagnosis','followUp'].forEach(id=>{
+      qs('#'+id).addEventListener('input',()=> renderPreview(gatherForm()));
+    });
+
+    // also update when meds change
+    medListEl.addEventListener('input',()=> renderPreview(gatherForm()));
+
+    // initial render
+    renderPreview(gatherForm());
+  </script></body>
+</html>
